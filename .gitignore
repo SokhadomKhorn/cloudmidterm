@@ -1,0 +1,18 @@
+# Dependency directories
+node_modules/
+package-lock.json
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Environment local overrides (preserve default .env for assignment submission)
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Operating System Files
+.DS_Store
+Thumbs.db

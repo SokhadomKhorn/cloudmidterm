@@ -1,0 +1,16 @@
+{
+  "name": "authentication-microservice",
+  "version": "1.0.0",
+  "description": "Smart Campus Access Control - Authentication & JWT Service",
+  "main": "authentication-service.js",
+  "scripts": {
+    "start": "node authentication-service.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.3.1"
+  }
+}

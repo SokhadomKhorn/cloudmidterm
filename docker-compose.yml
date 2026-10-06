@@ -1,0 +1,195 @@
+version: '3.8'
+
+networks:
+  campus_network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local
+
+services:
+  # ==================================================================
+  # DATABASE LAYER: MongoDB
+  # ==================================================================
+  mongodb:
+    image: mongo:7.0
+    container_name: campus_mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - campus_network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==================================================================
+  # COMMON MANDATORY MICROSERVICES
+  # ==================================================================
+
+  # 1. API Gateway & Round Robin Load Balancer
+  api_gateway:
+    build:
+      context: ./APIGateway_Microservice
+      dockerfile: Dockerfile
+    container_name: campus_api_gateway
+    restart: always
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - JWT_SECRET=CampusSecuritySuperSecretKey2026!#@
+      - JWT_SECRETE=CampusSecuritySuperSecretKey2026!#@
+      - REGISTRATION_SERVICE_URL=http://registration_service:5001
+      - AUTH_SERVICE_URL=http://auth_service:5002
+      - ROOM_SERVICE_URL=http://room_service:5003
+      - PERMISSION_SERVICE_URL=http://permission_service:5004
+      - ACCESS_LOG_INSTANCE_1=http://accesslog_service_1:5005
+      - ACCESS_LOG_INSTANCE_2=http://accesslog_service_2:5015
+      - EMERGENCY_SERVICE_URL=http://emergency_service:5006
+    networks:
+      - campus_network
+    depends_on:
+      - registration_service
+      - auth_service
+      - room_service
+      - permission_service
+      - accesslog_service_1
+      - accesslog_service_2
+      - emergency_service
+
+  # 2. Registration Microservice
+  registration_service:
+    build:
+      context: ./Registration_Microservice
+      dockerfile: Dockerfile
+    container_name: campus_registration_service
+    restart: always
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=5001
+      - MONGO_URI=${MONGO_URI:-mongodb://localhost:27017/smart_campus_access_db}
+      - JWT_SECRET=CampusSecuritySuperSecretKey2026!#@
+    networks:
+      - campus_network
+
+
+  # 3. Authentication Microservice (Login & JWT)
+  auth_service:
+    build:
+      context: ./Authentication_Microservice
+      dockerfile: Dockerfile
+    container_name: campus_auth_service
+    restart: always
+    ports:
+      - "5002:5002"
+    environment:
+      - PORT=5002
+      - MONGO_URI=${MONGO_URI:-mongodb://localhost:27017/smart_campus_access_db}
+      - JWT_SECRET=CampusSecuritySuperSecretKey2026!#@
+      - JWT_SECRETE=CampusSecuritySuperSecretKey2026!#@
+    networks:
+      - campus_network
+
+
+  # ==================================================================
+  # TEAM MEMBER 1 SPECIFIC MICROSERVICES
+  # ==================================================================
+
+  # 4. Room Management Microservice
+  room_service:
+    build:
+      context: ./Room_Microservice
+      dockerfile: Dockerfile
+    container_name: campus_room_service
+    restart: always
+    ports:
+      - "5003:5003"
+    environment:
+      - PORT=5003
+      - MONGO_URI=${MONGO_URI:-mongodb://localhost:27017/smart_campus_access_db}
+      - JWT_SECRET=CampusSecuritySuperSecretKey2026!#@
+    networks:
+      - campus_network
+
+
+  # 5. Access Permission Microservice
+  permission_service:
+    build:
+      context: ./Permission_Microservice
+      dockerfile: Dockerfile
+    container_name: campus_permission_service
+    restart: always
+    ports:
+      - "5004:5004"
+    environment:
+      - PORT=5004
+      - MONGO_URI=${MONGO_URI:-mongodb://localhost:27017/smart_campus_access_db}
+      - JWT_SECRET=CampusSecuritySuperSecretKey2026!#@
+    networks:
+      - campus_network
+
+
+  # ==================================================================
+  # TEAM MEMBER 2 SPECIFIC MICROSERVICES (WITH LOAD BALANCED REPLICAS)
+  # ==================================================================
+
+  # 6a. Access Log Microservice - Instance 1
+  accesslog_service_1:
+    build:
+      context: ./AccessLog_Microservice
+      dockerfile: Dockerfile
+    container_name: campus_accesslog_service_1
+    restart: always
+    ports:
+      - "5005:5005"
+    environment:
+      - PORT=5005
+      - INSTANCE_NAME=AccessLog-Instance-1
+      - MONGO_URI=${MONGO_URI:-mongodb://localhost:27017/smart_campus_access_db}
+      - JWT_SECRET=CampusSecuritySuperSecretKey2026!#@
+    networks:
+      - campus_network
+
+
+  # 6b. Access Log Microservice - Instance 2 (Load Balanced Replica)
+  accesslog_service_2:
+    build:
+      context: ./AccessLog_Microservice
+      dockerfile: Dockerfile
+    container_name: campus_accesslog_service_2
+    restart: always
+    ports:
+      - "5015:5015"
+    environment:
+      - PORT=5015
+      - INSTANCE_NAME=AccessLog-Instance-2
+      - MONGO_URI=${MONGO_URI:-mongodb://localhost:27017/smart_campus_access_db}
+      - JWT_SECRET=CampusSecuritySuperSecretKey2026!#@
+    networks:
+      - campus_network
+
+
+  # 7. Emergency Alert & Security Microservice
+  emergency_service:
+    build:
+      context: ./EmergencyAlert_Microservice
+      dockerfile: Dockerfile
+    container_name: campus_emergency_service
+    restart: always
+    ports:
+      - "5006:5006"
+    environment:
+      - PORT=5006
+      - MONGO_URI=${MONGO_URI:-mongodb://localhost:27017/smart_campus_access_db}
+      - JWT_SECRET=CampusSecuritySuperSecretKey2026!#@
+    networks:
+      - campus_network
+
+

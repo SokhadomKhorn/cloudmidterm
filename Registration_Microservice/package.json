@@ -1,0 +1,15 @@
+{
+  "name": "registration-microservice",
+  "version": "1.0.0",
+  "description": "Smart Campus Access Control - User Registration Microservice",
+  "main": "registration.js",
+  "scripts": {
+    "start": "node registration.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.19.2",
+    "mongoose": "^8.3.1"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "permission-microservice",
+  "version": "1.0.0",
+  "description": "Smart Campus Access Control - Permission Management Microservice",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.19.2",
+    "mongoose": "^8.3.1"
+  }
+}
