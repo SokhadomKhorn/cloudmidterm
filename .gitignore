@@ -8,6 +8,7 @@ logs
 npm-debug.log*
 
 # Environment local overrides (preserve default .env for assignment submission)
+.env
 .env.local
 .env.development.local
 .env.test.local
