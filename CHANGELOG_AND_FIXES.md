@@ -117,9 +117,11 @@ docker compose up -d
 # Check health of all containers
 docker compose ps
 
-# Run the 19-point automated test suite
-node run_tests.js
 
-# Open the live console in your browser
-http://localhost:4000/
-```
+## 5. Cloud Database Migration (MongoDB Atlas)
+
+All microservices now connect to the cloud MongoDB Atlas replica set (`clusterdb`):
+- **Atlas URI**: Configured across root `.env`, all 6 microservice `.env` files, and `docker-compose.yml`.
+- **Live User Authentication**: Any user registered via Postman (`POST /reg`) or the web UI is immediately stored in `clusterdb.users` and can log in at `POST /login` or via the web console.
+- **UI Custom Authentication**: Added a "Custom Login / Register" modal directly in the web console header at `http://localhost:4000/`, allowing manual sign-in and account registration with live session updates.
+

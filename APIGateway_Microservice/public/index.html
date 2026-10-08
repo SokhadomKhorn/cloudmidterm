@@ -545,7 +545,77 @@
                 <button class="btn btn-secondary btn-sm" onclick="switchUserRole('admin')">Switch to Admin</button>
                 <button class="btn btn-secondary btn-sm" onclick="switchUserRole('student')">Switch to Student</button>
                 <button class="btn btn-secondary btn-sm" onclick="switchUserRole('faculty')">Switch to Faculty</button>
+                <button class="btn btn-secondary btn-sm" onclick="toggleCustomAuthPanel()">Custom Login / Register</button>
                 <button class="btn btn-primary btn-sm" onclick="runAutomatedTestSuite()">Run test.md Verification</button>
+            </div>
+        </div>
+
+        <!-- Custom Login / Register Panel -->
+        <div id="customAuthPanel" style="display: none; background: var(--bg-surface); border: 1px solid var(--border-strong); border-radius: 8px; padding: 20px; margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <div style="font-weight: 600; font-size: 14px; color: var(--text-primary);">Account Authentication (MongoDB Atlas Live Database)</div>
+                <button class="btn btn-secondary btn-sm" onclick="toggleCustomAuthPanel()">Close</button>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <!-- Login Form -->
+                <div style="background: var(--bg-card); padding: 16px; border-radius: 6px; border: 1px solid var(--border-subtle);">
+                    <div style="font-weight: 600; font-size: 13px; margin-bottom: 12px; color: var(--text-primary);">Login with Any Registered Account</div>
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="customLoginEmail" placeholder="e.g. admin@campus.edu">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" id="customLoginPassword" placeholder="Enter password">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Role (Optional)</label>
+                        <select class="form-control" id="customLoginRole">
+                            <option value="">Auto-Detect from Account</option>
+                            <option value="admin">Admin</option>
+                            <option value="faculty">Faculty</option>
+                            <option value="student">Student</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary btn-sm" style="width: 100%;" onclick="executeCustomLogin()">Log In to Session</button>
+                    <div id="customLoginFeedback" style="margin-top: 8px; font-size: 12px; font-family: var(--font-mono);"></div>
+                </div>
+
+                <!-- Register Form -->
+                <div style="background: var(--bg-card); padding: 16px; border-radius: 6px; border: 1px solid var(--border-subtle);">
+                    <div style="font-weight: 600; font-size: 13px; margin-bottom: 12px; color: var(--text-primary);">Register New User to Atlas Database</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="customRegName" placeholder="John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Role</label>
+                            <select class="form-control" id="customRegRole">
+                                <option value="student">Student</option>
+                                <option value="faculty">Faculty</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="customRegEmail" placeholder="john@campus.edu">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-control" id="customRegPassword" placeholder="Password123!">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Department</label>
+                            <input type="text" class="form-control" id="customRegDept" placeholder="Engineering">
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" style="width: 100%;" onclick="executeCustomRegister()">Register &amp; Log In</button>
+                    <div id="customRegFeedback" style="margin-top: 8px; font-size: 12px; font-family: var(--font-mono);"></div>
+                </div>
             </div>
         </div>
 
@@ -818,6 +888,120 @@
             document.getElementById('sessionUserSub').innerText = `${currentUser.email} • Role: ${currentUser.role.toUpperCase()}`;
             document.getElementById('avatarRoleText').innerText = currentUser.role.slice(0, 2).toUpperCase();
             document.getElementById('swipeRoleDisplay').value = currentUser.role.toUpperCase();
+        }
+
+        function toggleCustomAuthPanel() {
+            const panel = document.getElementById('customAuthPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+
+        async function executeCustomLogin() {
+            const email = document.getElementById('customLoginEmail').value.trim();
+            const password = document.getElementById('customLoginPassword').value;
+            const role = document.getElementById('customLoginRole').value.trim();
+            const feedback = document.getElementById('customLoginFeedback');
+
+            if (!email || !password) {
+                feedback.innerHTML = '<span style="color:var(--status-red-text);">Email and password required.</span>';
+                return;
+            }
+
+            feedback.innerHTML = '<span style="color:var(--text-muted);">Authenticating...</span>';
+
+            try {
+                const payload = { email, password };
+                if (role) payload.role = role;
+
+                const res = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+                if (res.ok && data.token) {
+                    currentToken = data.token;
+                    let userRole = role || 'user';
+                    let userName = email.split('@')[0];
+                    if (data.user) {
+                        userRole = data.user.role || userRole;
+                        userName = data.user.name || userName;
+                    }
+                    currentUser = {
+                        name: userName,
+                        email: email,
+                        role: userRole
+                    };
+                    currentRole = userRole;
+                    updateSessionUI();
+                    await loadRoomInventory();
+                    feedback.innerHTML = '<span style="color:var(--status-green-text);">Login successful! Active session updated.</span>';
+                    setTimeout(() => {
+                        const panel = document.getElementById('customAuthPanel');
+                        if (panel) panel.style.display = 'none';
+                    }, 1200);
+                } else {
+                    feedback.innerHTML = `<span style="color:var(--status-red-text);">Error: ${data.message || 'Login failed'}</span>`;
+                }
+            } catch (err) {
+                feedback.innerHTML = `<span style="color:var(--status-red-text);">Network error: ${err.message}</span>`;
+            }
+        }
+
+        async function executeCustomRegister() {
+            const name = document.getElementById('customRegName').value.trim();
+            const role = document.getElementById('customRegRole').value;
+            const email = document.getElementById('customRegEmail').value.trim();
+            const password = document.getElementById('customRegPassword').value;
+            const department = document.getElementById('customRegDept').value.trim() || 'General';
+            const feedback = document.getElementById('customRegFeedback');
+
+            if (!name || !email || !password) {
+                feedback.innerHTML = '<span style="color:var(--status-red-text);">Name, email, and password required.</span>';
+                return;
+            }
+
+            feedback.innerHTML = '<span style="color:var(--text-muted);">Registering account...</span>';
+
+            try {
+                const regRes = await fetch('/reg', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password, role, department })
+                });
+
+                const regData = await regRes.json();
+                if (!regRes.ok) {
+                    feedback.innerHTML = `<span style="color:var(--status-red-text);">Registration error: ${regData.message || 'Failed'}</span>`;
+                    return;
+                }
+
+                feedback.innerHTML = '<span style="color:var(--status-green-text);">Registration complete. Logging in...</span>';
+
+                const loginRes = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, role })
+                });
+
+                const loginData = await loginRes.json();
+                if (loginRes.ok && loginData.token) {
+                    currentToken = loginData.token;
+                    currentUser = { name, email, role };
+                    currentRole = role;
+                    updateSessionUI();
+                    await loadRoomInventory();
+                    feedback.innerHTML = '<span style="color:var(--status-green-text);">Registered & logged in successfully!</span>';
+                    setTimeout(() => {
+                        const panel = document.getElementById('customAuthPanel');
+                        if (panel) panel.style.display = 'none';
+                    }, 1200);
+                } else {
+                    feedback.innerHTML = `<span style="color:var(--status-amber-text);">Registered, but login failed: ${loginData.message}</span>`;
+                }
+            } catch (err) {
+                feedback.innerHTML = `<span style="color:var(--status-red-text);">Network error: ${err.message}</span>`;
+            }
         }
 
         // Room Management

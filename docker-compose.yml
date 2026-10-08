@@ -72,7 +72,7 @@ services:
       - "5001:5001"
     environment:
       - PORT=5001
-      - MONGO_URI=${MONGO_URI:-mongodb://mongodb:27017/smart_campus_access_db}
+      - MONGO_URI=${MONGO_URI:-mongodb://fromheaventohelliamthegod_db_user:kp0m6aZ5uUhLiuoo@ac-v0qr9ql-shard-00-00.bziazoz.mongodb.net:27017,ac-v0qr9ql-shard-00-01.bziazoz.mongodb.net:27017,ac-v0qr9ql-shard-00-02.bziazoz.mongodb.net:27017/clusterdb?ssl=true&replicaSet=atlas-cvnewq-shard-0&authSource=admin&appName=Cluster0}
       - JWT_SECRET=CampusSecuritySuperSecretKey2026!#@
     networks:
       - campus_network
@@ -90,7 +90,7 @@ services:
       - "5002:5002"
     environment:
       - PORT=5002
-      - MONGO_URI=${MONGO_URI:-mongodb://mongodb:27017/smart_campus_access_db}
+      - MONGO_URI=${MONGO_URI:-mongodb://fromheaventohelliamthegod_db_user:kp0m6aZ5uUhLiuoo@ac-v0qr9ql-shard-00-00.bziazoz.mongodb.net:27017,ac-v0qr9ql-shard-00-01.bziazoz.mongodb.net:27017,ac-v0qr9ql-shard-00-02.bziazoz.mongodb.net:27017/clusterdb?ssl=true&replicaSet=atlas-cvnewq-shard-0&authSource=admin&appName=Cluster0}
       - JWT_SECRET=CampusSecuritySuperSecretKey2026!#@
       - JWT_SECRETE=CampusSecuritySuperSecretKey2026!#@
     networks:
@@ -113,7 +113,7 @@ services:
       - "5003:5003"
     environment:
       - PORT=5003
-      - MONGO_URI=${MONGO_URI:-mongodb://mongodb:27017/smart_campus_access_db}
+      - MONGO_URI=${MONGO_URI:-mongodb://fromheaventohelliamthegod_db_user:kp0m6aZ5uUhLiuoo@ac-v0qr9ql-shard-00-00.bziazoz.mongodb.net:27017,ac-v0qr9ql-shard-00-01.bziazoz.mongodb.net:27017,ac-v0qr9ql-shard-00-02.bziazoz.mongodb.net:27017/clusterdb?ssl=true&replicaSet=atlas-cvnewq-shard-0&authSource=admin&appName=Cluster0}
       - JWT_SECRET=CampusSecuritySuperSecretKey2026!#@
     networks:
       - campus_network
@@ -131,7 +131,7 @@ services:
       - "5004:5004"
     environment:
       - PORT=5004
-      - MONGO_URI=${MONGO_URI:-mongodb://mongodb:27017/smart_campus_access_db}
+      - MONGO_URI=${MONGO_URI:-mongodb://fromheaventohelliamthegod_db_user:kp0m6aZ5uUhLiuoo@ac-v0qr9ql-shard-00-00.bziazoz.mongodb.net:27017,ac-v0qr9ql-shard-00-01.bziazoz.mongodb.net:27017,ac-v0qr9ql-shard-00-02.bziazoz.mongodb.net:27017/clusterdb?ssl=true&replicaSet=atlas-cvnewq-shard-0&authSource=admin&appName=Cluster0}
       - JWT_SECRET=CampusSecuritySuperSecretKey2026!#@
     networks:
       - campus_network
@@ -154,7 +154,7 @@ services:
     environment:
       - PORT=5005
       - INSTANCE_NAME=AccessLog-Instance-1
-      - MONGO_URI=${MONGO_URI:-mongodb://mongodb:27017/smart_campus_access_db}
+      - MONGO_URI=${MONGO_URI:-mongodb://fromheaventohelliamthegod_db_user:kp0m6aZ5uUhLiuoo@ac-v0qr9ql-shard-00-00.bziazoz.mongodb.net:27017,ac-v0qr9ql-shard-00-01.bziazoz.mongodb.net:27017,ac-v0qr9ql-shard-00-02.bziazoz.mongodb.net:27017/clusterdb?ssl=true&replicaSet=atlas-cvnewq-shard-0&authSource=admin&appName=Cluster0}
       - JWT_SECRET=CampusSecuritySuperSecretKey2026!#@
     networks:
       - campus_network
@@ -173,7 +173,7 @@ services:
     environment:
       - PORT=5015
       - INSTANCE_NAME=AccessLog-Instance-2
-      - MONGO_URI=${MONGO_URI:-mongodb://mongodb:27017/smart_campus_access_db}
+      - MONGO_URI=${MONGO_URI:-mongodb://fromheaventohelliamthegod_db_user:kp0m6aZ5uUhLiuoo@ac-v0qr9ql-shard-00-00.bziazoz.mongodb.net:27017,ac-v0qr9ql-shard-00-01.bziazoz.mongodb.net:27017,ac-v0qr9ql-shard-00-02.bziazoz.mongodb.net:27017/clusterdb?ssl=true&replicaSet=atlas-cvnewq-shard-0&authSource=admin&appName=Cluster0}
       - JWT_SECRET=CampusSecuritySuperSecretKey2026!#@
     networks:
       - campus_network
@@ -191,7 +191,7 @@ services:
       - "5006:5006"
     environment:
       - PORT=5006
-      - MONGO_URI=${MONGO_URI:-mongodb://mongodb:27017/smart_campus_access_db}
+      - MONGO_URI=${MONGO_URI:-mongodb://fromheaventohelliamthegod_db_user:kp0m6aZ5uUhLiuoo@ac-v0qr9ql-shard-00-00.bziazoz.mongodb.net:27017,ac-v0qr9ql-shard-00-01.bziazoz.mongodb.net:27017,ac-v0qr9ql-shard-00-02.bziazoz.mongodb.net:27017/clusterdb?ssl=true&replicaSet=atlas-cvnewq-shard-0&authSource=admin&appName=Cluster0}
       - JWT_SECRET=CampusSecuritySuperSecretKey2026!#@
     networks:
       - campus_network
