@@ -643,10 +643,7 @@
                 </div>
             </div>
             <div class="session-controls">
-                <button class="btn btn-secondary btn-sm" onclick="switchUserRole('admin')">Switch: Admin</button>
-                <button class="btn btn-secondary btn-sm" onclick="switchUserRole('faculty')">Switch: Faculty</button>
-                <button class="btn btn-secondary btn-sm" onclick="switchUserRole('student')">Switch: Student</button>
-                <button class="btn btn-primary btn-sm" onclick="runAutomatedTestSuite()">Run test.md Verification</button>
+                <button class="btn btn-primary btn-sm" id="btnRunTestSuite" onclick="runAutomatedTestSuite()" style="display: none;">Run test.md Verification</button>
                 <button class="btn btn-secondary btn-sm" onclick="logoutUser()">Sign Out</button>
             </div>
         </div>
@@ -786,7 +783,7 @@
         </div>
 
         <!-- Section 3: Automated Verification Terminal -->
-        <div class="card">
+        <div class="card" id="verificationSuiteSection" style="display: none;">
             <div class="card-header">
                 <div class="card-title">
                     <svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -1112,6 +1109,16 @@
             const swipeRoleDisplay = document.getElementById('swipeRoleDisplay');
             if (swipeRoleDisplay) {
                 swipeRoleDisplay.value = role.toUpperCase();
+            }
+
+            // 5. Automated Verification Suite (ADMIN ONLY)
+            const btnRunTestSuite = document.getElementById('btnRunTestSuite');
+            const verificationSuiteSection = document.getElementById('verificationSuiteSection');
+            if (btnRunTestSuite) {
+                btnRunTestSuite.style.display = isAdmin ? 'inline-block' : 'none';
+            }
+            if (verificationSuiteSection) {
+                verificationSuiteSection.style.display = isAdmin ? 'block' : 'none';
             }
         }
 

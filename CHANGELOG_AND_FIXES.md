@@ -139,3 +139,7 @@ All microservices now connect to the cloud MongoDB Atlas replica set (`clusterdb
      - Full management access: can create rooms, lock/unlock rooms, and trigger campus-wide lockdowns.
    - **Sign Out**:
      - Added a clean **Sign Out** button in the top navigation bar and session banner to return to the login gate at any time.
+
+3. **Clean Session Isolation**:
+   - Removed in-session role switcher buttons (`Switch: Admin`, `Switch: Faculty`, `Switch: Student`) to maintain strict session integrity. To change roles or accounts, users must legitimately sign out and sign in.
+   - Restricted the `Run test.md Verification` button and Automated Verification Suite Terminal strictly to `admin` users; students and faculty only see their appropriate workspace.
