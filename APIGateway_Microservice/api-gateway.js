@@ -2,6 +2,7 @@ const express = require('express');
 const httpProxy = require('http-proxy');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 const RoundRobinLoadBalancer = require('./load-balancer.js');
@@ -273,6 +274,15 @@ app.use('/admin', authToken, authRole(['admin']), (req, res) => {
 
 app.use('/api/admin', authToken, authRole(['admin']), (req, res) => {
     forward(req, res, REG_SERVICE_URL);
+});
+
+// ====================================================================
+// STATIC CONSOLE & LIVE DASHBOARD DEMO
+// ====================================================================
+app.use(express.static(path.join(__dirname, 'public'), { etag: false, maxAge: 0 }));
+app.get(['/', '/dashboard'], (req, res) => {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // 404 Catch-All
