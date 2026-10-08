@@ -143,3 +143,9 @@ All microservices now connect to the cloud MongoDB Atlas replica set (`clusterdb
 3. **Clean Session Isolation**:
    - Removed in-session role switcher buttons (`Switch: Admin`, `Switch: Faculty`, `Switch: Student`) to maintain strict session integrity. To change roles or accounts, users must legitimately sign out and sign in.
    - Restricted the `Run test.md Verification` button and Automated Verification Suite Terminal strictly to `admin` users; students and faculty only see their appropriate workspace.
+
+## 7. Ready-to-Use Postman Suite
+
+Created official, importable Postman files at the root of the repository:
+- `postman_collection.json`: Complete Postman v2.1.0 collection with all 5 test folders from `test.md`. Contains pre-configured tests that automatically capture JWT tokens on Login (`adminToken`, `studentToken`, `facultyToken`) and feed them into protected requests.
+- `postman_environment.json`: Postman environment with `baseUrl` (`http://localhost:4000`), switchable to EC2 public IP for cloud grading.

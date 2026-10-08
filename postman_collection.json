@@ -1,0 +1,648 @@
+{
+  "info": {
+    "_postman_id": "c1f7a4e2-63b9-4912-8e81-7dfa932c510e",
+    "name": "Smart Campus Access Control System - API Gateway",
+    "description": "Comprehensive Postman test collection for the Distributed Campus Access Control System. Fully synchronized with MongoDB Atlas (clusterdb) and the Gateway UI console (http://localhost:4000).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4000",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "studentToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "facultyToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication & Registration",
+      "item": [
+        {
+          "name": "1.1 Register Admin User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin Director\",\n  \"email\": \"admin@campus.edu\",\n  \"password\": \"Password123!\",\n  \"role\": \"admin\",\n  \"department\": \"Campus Security\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reg",
+              "host": ["{{baseUrl}}"],
+              "path": ["reg"]
+            },
+            "description": "Registers an administrator account stored persistently in MongoDB Atlas."
+          },
+          "response": []
+        },
+        {
+          "name": "1.2 Login Admin (Auto-saves adminToken)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "if (json.token) {",
+                  "    pm.collectionVariables.set(\"adminToken\", json.token);",
+                  "    pm.environment.set(\"adminToken\", json.token);",
+                  "    console.log(\"Saved adminToken:\", json.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@campus.edu\",\n  \"password\": \"Password123!\",\n  \"role\": \"admin\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["login"]
+            },
+            "description": "Logs in as admin and automatically stores JWT token in {{adminToken}}."
+          },
+          "response": []
+        },
+        {
+          "name": "1.3 Register Student User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Student Demo\",\n  \"email\": \"student@campus.edu\",\n  \"password\": \"Password123!\",\n  \"role\": \"student\",\n  \"department\": \"Computer Science\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reg",
+              "host": ["{{baseUrl}}"],
+              "path": ["reg"]
+            },
+            "description": "Registers a student user with standard privileges in MongoDB Atlas."
+          },
+          "response": []
+        },
+        {
+          "name": "1.4 Login Student (Auto-saves studentToken)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "if (json.token) {",
+                  "    pm.collectionVariables.set(\"studentToken\", json.token);",
+                  "    pm.environment.set(\"studentToken\", json.token);",
+                  "    console.log(\"Saved studentToken:\", json.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"student@campus.edu\",\n  \"password\": \"Password123!\",\n  \"role\": \"student\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["login"]
+            },
+            "description": "Logs in as student and automatically stores JWT token in {{studentToken}}."
+          },
+          "response": []
+        },
+        {
+          "name": "1.5 Register Faculty User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Faculty Professor\",\n  \"email\": \"faculty@campus.edu\",\n  \"password\": \"Password123!\",\n  \"role\": \"faculty\",\n  \"department\": \"Engineering\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reg",
+              "host": ["{{baseUrl}}"],
+              "path": ["reg"]
+            },
+            "description": "Registers a faculty member in MongoDB Atlas."
+          },
+          "response": []
+        },
+        {
+          "name": "1.6 Login Faculty (Auto-saves facultyToken)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "if (json.token) {",
+                  "    pm.collectionVariables.set(\"facultyToken\", json.token);",
+                  "    pm.environment.set(\"facultyToken\", json.token);",
+                  "    console.log(\"Saved facultyToken:\", json.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"faculty@campus.edu\",\n  \"password\": \"Password123!\",\n  \"role\": \"faculty\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["login"]
+            },
+            "description": "Logs in as faculty and stores JWT token in {{facultyToken}}."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Room Management (Protected)",
+      "item": [
+        {
+          "name": "2.1 List All Campus Rooms",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/rooms",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rooms"]
+            },
+            "description": "Returns live room inventory from MongoDB Atlas. Synchronized with the web UI table."
+          },
+          "response": []
+        },
+        {
+          "name": "2.2 Create Room (Admin Clearance)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roomNumber\": \"ENG-301\",\n  \"roomName\": \"Software Engineering Lab\",\n  \"building\": \"Engineering Hall\",\n  \"floor\": 3,\n  \"roomType\": \"LAB\",\n  \"capacity\": 50,\n  \"securityClearance\": \"GENERAL\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/rooms",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rooms"]
+            },
+            "description": "Creates a new room in MongoDB Atlas. Immediately renders in the web console."
+          },
+          "response": []
+        },
+        {
+          "name": "2.3 Lock Room (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lock\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/rooms/ENG-301/lock",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rooms", "ENG-301", "lock"]
+            },
+            "description": "Manually engages electronic deadbolt on target room."
+          },
+          "response": []
+        },
+        {
+          "name": "2.4 Unlock Room (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lock\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/rooms/ENG-301/lock",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rooms", "ENG-301", "lock"]
+            },
+            "description": "Unlocks electronic deadbolt on target room."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Negative Test Cases (Assignment Requirements)",
+      "item": [
+        {
+          "name": "3.1 Wrong Password (Expect 401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 401 Unauthorized\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@campus.edu\",\n  \"password\": \"WRONG_PASSWORD_123\",\n  \"role\": \"admin\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["login"]
+            },
+            "description": "Negative check 4.1: Submitting incorrect password returns 401 Unauthorized."
+          },
+          "response": []
+        },
+        {
+          "name": "3.2 Missing Token (Expect 401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 401 Unauthorized\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/rooms",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rooms"]
+            },
+            "description": "Negative check 4.2: Requesting protected resource with no token returns 401."
+          },
+          "response": []
+        },
+        {
+          "name": "3.3 Invalid Token (Expect 403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 403 Forbidden\", function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer fake123"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/rooms",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rooms"]
+            },
+            "description": "Negative check 4.3: Submitting invalid/forged Bearer token returns 403 Forbidden."
+          },
+          "response": []
+        },
+        {
+          "name": "3.4 RBAC - Student Cannot Create Room (Expect 403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 403 Forbidden\", function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});",
+                  "const json = pm.response.json();",
+                  "pm.test(\"Role student unauthorized message\", function () {",
+                  "    pm.expect(json.message).to.include(\"Role 'student' is unauthorized\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roomNumber\": \"ENG-999\",\n  \"roomName\": \"Unauthorized Room\",\n  \"building\": \"Engineering Hall\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/rooms",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rooms"]
+            },
+            "description": "Negative check 4.4: Role-Based Access Control denies room creation to students."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. Door Swipe & Round-Robin Load Balancer",
+      "item": [
+        {
+          "name": "4.1 Badge Swipe Request 1 (Routes to Node 1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Header X-Load-Balanced-By is API-Gateway-RoundRobin\", function () {",
+                  "    pm.expect(pm.response.headers.get(\"X-Load-Balanced-By\")).to.eql(\"API-Gateway-RoundRobin\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"USR-1001\",\n  \"userEmail\": \"student@campus.edu\",\n  \"userRole\": \"student\",\n  \"roomId\": \"ROOM-ENG-301\",\n  \"roomNumber\": \"ENG-301\",\n  \"building\": \"Engineering Hall\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/logs/swipe",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "logs", "swipe"]
+            },
+            "description": "Simulates door reader badge swipe. Gateway load balancer routes to AccessLog-Instance-1 or AccessLog-Instance-2."
+          },
+          "response": []
+        },
+        {
+          "name": "4.2 Badge Swipe Request 2 (Routes to Node 2)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Header X-Load-Balanced-By is API-Gateway-RoundRobin\", function () {",
+                  "    pm.expect(pm.response.headers.get(\"X-Load-Balanced-By\")).to.eql(\"API-Gateway-RoundRobin\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"USR-1001\",\n  \"userEmail\": \"student@campus.edu\",\n  \"userRole\": \"student\",\n  \"roomId\": \"ROOM-ENG-301\",\n  \"roomNumber\": \"ENG-301\",\n  \"building\": \"Engineering Hall\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/logs/swipe",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "logs", "swipe"]
+            },
+            "description": "Second consecutive swipe. Verifies round-robin alternating distribution."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "5. Emergency Alert & Campus Lockdown",
+      "item": [
+        {
+          "name": "5.1 Check Lockdown Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/emergency/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "emergency", "status"]
+            },
+            "description": "Queries campus-wide emergency lockdown status."
+          },
+          "response": []
+        },
+        {
+          "name": "5.2 Trigger Campus Lockdown (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": true,\n  \"reason\": \"Security Drill\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/emergency/lockdown",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "emergency", "lockdown"]
+            },
+            "description": "Engages emergency lockdown across all buildings. Immediately updates web UI banner."
+          },
+          "response": []
+        },
+        {
+          "name": "5.3 Lift Campus Lockdown (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/emergency/lockdown",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "emergency", "lockdown"]
+            },
+            "description": "Lifts emergency lockdown and restores standard access policies."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
