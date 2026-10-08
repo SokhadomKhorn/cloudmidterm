@@ -122,6 +122,20 @@ docker compose ps
 
 All microservices now connect to the cloud MongoDB Atlas replica set (`clusterdb`):
 - **Atlas URI**: Configured across root `.env`, all 6 microservice `.env` files, and `docker-compose.yml`.
-- **Live User Authentication**: Any user registered via Postman (`POST /reg`) or the web UI is immediately stored in `clusterdb.users` and can log in at `POST /login` or via the web console.
-- **UI Custom Authentication**: Added a "Custom Login / Register" modal directly in the web console header at `http://localhost:4000/`, allowing manual sign-in and account registration with live session updates.
 
+## 6. Authentication-First Flow & Role-Based UI (RBAC)
+
+1. **Authentication Gate**:
+   - Unauthenticated visitors are now shown a dedicated **Sign In Screen** first instead of directly exposing the control system.
+   - Separate **Register Screen** accessible via a toggle link ("Don't have an account? Register here"), keeping Login and Register clean, focused, and distinct.
+   - Includes one-click quick demo buttons (`[Admin]`, `[Faculty]`, `[Student]`) for rapid evaluation and testing.
+
+2. **Role-Based Access Control in the UI**:
+   - **Student / Faculty**:
+     - Cannot see or use the **Quick Create Room** form (hidden from UI).
+     - Cannot see or trigger **Emergency Lockdown** action buttons (shows "Admin Clearance Required").
+     - Cannot click lock/unlock on campus rooms; the Action column displays `<span class="pill pill-neutral">Read Only</span>`.
+   - **Admin**:
+     - Full management access: can create rooms, lock/unlock rooms, and trigger campus-wide lockdowns.
+   - **Sign Out**:
+     - Added a clean **Sign Out** button in the top navigation bar and session banner to return to the login gate at any time.
